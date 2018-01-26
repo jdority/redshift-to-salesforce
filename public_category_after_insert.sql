@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
         
         IF NOT FOUND THEN 
            INSERT INTO salesforce.category__c (catid__c, catgroup__c, name, catdesc__c) 
-                                       VALUES (NEW.catid, NEW.catgroup, NEW.name, NEW.catdesc);
+                                       VALUES (NEW.catid, NEW.catgroup, NEW.catname, NEW.catdesc);
         END IF; 
         RETURN NULL;
     END; 
