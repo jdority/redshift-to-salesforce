@@ -1,6 +1,4 @@
 # https://docs.aws.amazon.com/redshift/latest/gsg/rs-gsg-create-sample-db.html
-# Redshift Schema from AWS Tutorial - credentials need to be replaced with "your credentials"
-#
 create table users(
 	userid integer not null,
 	username char(8),
@@ -75,7 +73,8 @@ create table sales(
 	saletime timestamp);
 	
 	
-	
+# Redshift Schema from AWS Tutorial - credentials need to be replaced with "your credentials"
+# myRedshift IAM Role is assigned in the Redshift Cluster Console not IAM Console	
 copy users from 's3://awssampledbuswest2/tickit/allusers_pipe.txt' 
 credentials 'aws_iam_role=arn:aws:iam::620084051908:role/myRedshiftRole' 
 delimiter '|' region 'us-west-2';
