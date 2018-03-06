@@ -1,3 +1,4 @@
+--This Postgres Function + Trigger assist in getting around features glue doesn't have such as UPSERT and TRUNCATE TABLE.
 --
 --Heroku Postgres Schemas:
 --  * public - staging schema where AWS GLUE writes the Redshift rows for the category table.
