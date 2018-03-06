@@ -24,6 +24,7 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
                  VALUES (NEXTVAL('salesforce.category__c_id_seq'::regclass),NEW.catid, NEW.catgroup, NEW.catname, NEW.catdesc)
                  ON CONFLICT ON CONSTRAINT catid__c_unq
                  DO UPDATE SET (catgroup__c, name, catdesc__c) = (NEW.catgroup, NEW.catname, NEW.catdesc);
+                 DELETE from category where catid = NEW.catid;
                RETURN NULL;
          END; 
     $BODY$
