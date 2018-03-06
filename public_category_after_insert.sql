@@ -12,10 +12,9 @@ ALTER TABLE salesforce.category__c
    ADD CONSTRAINT catid__c_unq UNIQUE USING INDEX hcu_idx_category__c_catid__c;
    
 
---public_category_after_insert()
---------------------------------------------------------------------------------------------------------------------------
+
 --STEP 2:  This function performs an UPSERT into the salesforce.category__c table.   AWS does not support an UPSERT 
---------------------------------------------------------------------------------------------------------------------------
+--public_category_after_insert()
 CREATE OR REPLACE FUNCTION public_category_after_insert()
     RETURNS trigger AS
 
@@ -39,10 +38,8 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
     LANGUAGE plpgsql;
 
 
----------------------------------------------------------------------------------------------------------------------------
 -- STEP 3: After AWS Glue writes a row of data into the staging table public.category - a procedure will be called to update 
 -- salesforce.category__c schema which is referenced in Heroku Connect
----------------------------------------------------------------------------------------------------------------------------
 -- public_category_after_insert
 CREATE TRIGGER public_category_after_insert
  AFTER INSERT on public.category
