@@ -4,17 +4,14 @@
 --  * public - staging schema where AWS GLUE writes the Redshift rows for the category table.
 --  * salesforce - this is the schema that Heroku Connect uses.
 
---After AWS Glue writes a row to the public staging schema, this function will upsert the row into the salesforce schema
---so Heroku Connect can then sync to salesforce;
-
 
 --STEP 1:  A unique constraint is required to use ON CONFLICT syntax.  Heroku Connect creates with hcu_ naming convention.
 ALTER TABLE salesforce.category__c 
    ADD CONSTRAINT catid__c_unq UNIQUE USING INDEX hcu_idx_category__c_catid__c;
    
 
-
---STEP 2:  This function performs an UPSERT into the salesforce.category__c table.   AWS does not support an UPSERT 
+--STEP 2:  This function will upsert the row into the salesforce schema so Heroku Connect can then sync to salesforce; 
+--         AWS does not support UPSERT 
 --public_category_after_insert()
 CREATE OR REPLACE FUNCTION public_category_after_insert()
     RETURNS trigger AS
@@ -40,7 +37,7 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
 
 
 -- STEP 3: After AWS Glue writes a row of data into the staging table public.category - a procedure will be called to update 
--- salesforce.category__c schema which is referenced in Heroku Connect
+--         salesforce.category__c schema which is referenced in Heroku Connect
 -- public_category_after_insert
 CREATE TRIGGER public_category_after_insert
  AFTER INSERT on public.category
