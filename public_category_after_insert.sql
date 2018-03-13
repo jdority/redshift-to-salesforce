@@ -6,6 +6,8 @@
 
 
 --STEP 1:  A unique constraint is required to use ON CONFLICT syntax.  Heroku Connect creates with hcu_ naming convention.
+DROP index salesforce.hc_idx_cloud_forge_build_test__c_name; - Drop Index and recreate as unique
+CREATE unique index name_idx_unq on salesforce.cloud_forge_build_test__c (name);
 ALTER TABLE salesforce.category__c 
    ADD CONSTRAINT catid__c_unq UNIQUE USING INDEX hcu_idx_category__c_catid__c;
    
