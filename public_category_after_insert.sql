@@ -86,5 +86,6 @@ CREATE TRIGGER public_category_after_insert
    FOR EACH ROW EXECUTE PROCEDURE public_category_after_insert();
 
 -- Other handy syntax   
+-- ALTER TABLE salesforce.category__c drop constraint catid__c_unq;
 -- DROP FUNCTION public_category_after_insert();
 -- DROP TRIGGER public_category_after_insert ON category;
