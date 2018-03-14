@@ -86,7 +86,7 @@ CREATE OR REPLACE FUNCTION public_cloud_forge_build_test_after_insert()
     $BODY$
     LANGUAGE plpgsql;
 
--- STEP 3: Add trigger to staging table so that the FUNCTION is called to push rows to salesforce schema
+-- STEP 4: Add trigger to staging table so that the FUNCTION is called to push rows to salesforce schema
  CREATE TRIGGER public_cloud_forge_build_test_after_insert
  AFTER INSERT on public.cloud_forge_build
    FOR EACH ROW EXECUTE PROCEDURE public_cloud_forge_build_test_after_insert();
