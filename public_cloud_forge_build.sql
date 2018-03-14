@@ -1,11 +1,14 @@
 --This Postgres Function + Trigger assist in getting around features glue doesn't have such as UPSERT and TRUNCATE TABLE.
 --
 --Heroku Postgres will use two Schemas:
---  A) public - staging schema where AWS GLUE writes the Redshift or RDS rows for the cloud_forge_build table.
+--  A) public - staging schema where AWS GLUE writes the Redshift or RDS rows for the cloud_forge_build table.   You can use the Heroku
+--     CLI (Toolbelt) to review the schema once created:
+--
 --         heroku pg:psql -a [app-name]
 
---  redshift-to-salesforce::DATABASE=> \d cloud_forge_build;
---  Table "public.cloud_forge_build"
+--         \d cloud_forge_build;
+--
+--             Table "public.cloud_forge_build"
 --      Column       |         Type          | Modifiers 
 -- -------------------+-----------------------+-----------
 -- name              | character varying(80) | not null
@@ -14,8 +17,9 @@
 
 
 --  B) salesforce - this is the schema that Heroku Connect uses.
---  redshift-to-salesforce::DATABASE=> \d salesforce.cloud_forge_build_test__c;
--- Table "salesforce.cloud_forge_build_test__c"
+
+--  \d salesforce.cloud_forge_build_test__c;
+--          Table "salesforce.cloud_forge_build_test__c"
 --        Column        |            Type             |                                     Modifiers                                     
 -- ----------------------+-----------------------------+-----------------------------------------------------------------------------------
 -- createddate          | timestamp without time zone | 
