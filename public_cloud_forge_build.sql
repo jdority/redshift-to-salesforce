@@ -40,8 +40,8 @@ CREATE unique index public_name_idx_unq on public.cloud_forge_build(name);
 --STEP 2:  After Heroku Connect has synced the Salesforce Object to Postgres, Make sure there is a UNIQUE CONSTRAINT on the column(s)
 --         In this example, I am creating a UNIQUE index first using my favorite naming convention, then adding the contraint using this index.
 
-CREATE unique index name_unq_idx on salesforce.cloud_forge_build__c(name);
-ALTER TABLE salesforce.cloud_forge_build__c 
+CREATE unique index name_unq_idx on salesforce.cloud_forge_build_test__c(name);
+ALTER TABLE salesforce.cloud_forge_build_test__c 
    ADD CONSTRAINT name_unq UNIQUE USING INDEX name_unq_idx;
    
 
