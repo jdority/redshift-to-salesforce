@@ -66,19 +66,21 @@ CREATE OR REPLACE FUNCTION public_cloud_forge_build_test_after_insert()
                    site__c, 
                    service_positions__c, 
                    shadow_name__c)    /* shadow is used because Salesforce won't allow the name column to be an External ID */
-               VALUES 
+               VALUES                 /* the object must have an external ID if you want Heroku to write the data to Salesforce */
                    (NEXTVAL('salesforce.cloud_forge_build_test__c_id_seq'::regclass),
                     NEW.name, 
                     NEW.site, 
                     NEW.service_positions, 
-                    NEW.name)                                      /* this maps to shadow_name__c */
-                 ON CONFLICT ON CONSTRAINT name_unq -- UPSERT
+                    NEW.name)                                      /* this maps to shadow_name__c above and this is marked as the */
+                 ON CONFLICT ON CONSTRAINT name_unq -- UPSERT      /* the external ID field in Salesforce, since name cannot be used. */
                     DO UPDATE SET 
+
                        (site__c, 
-                       service_positions__c) = 
+                        service_positions__c) = 
 
                        (NEW.site, 
-                       NEW.service_positions);
+                        NEW.service_positions);
+
                  ------------------------------------------------------------------------------------------------
                  -- This statement will remove row from staging table public.cloud_forge_build AFTER the UPSERT completes,
                  -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
