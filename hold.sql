@@ -31,18 +31,19 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
             IF pg_trigger_depth() <> 1 THEN
                 RETURN NEW;
             END IF;
-            INSERT INTO salesforce.category__c (select nextval('salesforce.category__c_id_seq'::regclass), * from category where catid__c = NEW.catid__c)
+            INSERT INTO salesforce.category__c select nextval('salesforce.category__c_id_seq'::regclass), * from category where catid__c = NEW.catid__c
                  ON CONFLICT ON CONSTRAINT catid__c_unq -- UPSERT
                  DO UPDATE SET (salesforce.category__c.*) = (SELECT * FROM category where catid__c = NEW.catid__c);
                  ------------------------------------------------------------------------------------------------
                  -- This statement will remove row from staging table public.category AFTER the UPSERT completes,
                  -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
-                 DELETE FROM category WHERE catid__c = NEW.catid__c;
+                 -- DELETE FROM category WHERE catid__c = NEW.catid__c;
                  ------------------------------------------------------------------------------------------------
                RETURN NULL;
          END; 
     $BODY$
     LANGUAGE plpgsql;
+ 
 CREATE TRIGGER public_category_after_insert
  AFTER INSERT on public.category
    FOR EACH ROW EXECUTE PROCEDURE public_category_after_insert();
