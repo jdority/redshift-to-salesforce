@@ -89,5 +89,6 @@ CREATE TRIGGER public_category_after_insert
 -- ALTER TABLE salesforce.category__c drop constraint catid__c_unq;
 -- DROP FUNCTION public_category_after_insert();
 -- DROP TRIGGER public_category_after_insert ON category;
--- alter table category alter column createddate SET DEFAULT ('now'::text)::TIMESTAMP(6) WITHOUT                                                                            TIME ZONE;
+-- alter table category alter column createddate SET DEFAULT ('now'::text)::TIMESTAMP(6) WITHOUT   TIME ZONE; 
+-- insert into salesforce.category__c (id) values (DEFAULT);currval('salesforce.category__c_id_seq'::regclass) + 1)  
 
