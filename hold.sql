@@ -43,4 +43,6 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
          END; 
     $BODY$
     LANGUAGE plpgsql;
-
+CREATE TRIGGER public_category_after_insert
+ AFTER INSERT on public.category
+   FOR EACH ROW EXECUTE PROCEDURE public_category_after_insert();
