@@ -22,3 +22,25 @@ CREATE UNIQUE INDEX on salesforce.category__c(sfid);
 ALTER TABLE salesforce.category__c 
    ADD CONSTRAINT catid__c_unq UNIQUE USING INDEX catid_unq_idx;
 insert into salesforce.category__c select nextval('salesforce.category__c_id_seq'::regclass), * from category;
+
+CREATE OR REPLACE FUNCTION public_category_after_insert()
+    RETURNS trigger AS
+
+    $BODY$
+        BEGIN
+            IF pg_trigger_depth() <> 1 THEN
+                RETURN NEW;
+            END IF;
+            INSERT INTO salesforce.category__c (select nextval('salesforce.category__c_id_seq'::regclass), * from category where catid__c = NEW.catid__c)
+                 ON CONFLICT ON CONSTRAINT catid__c_unq -- UPSERT
+                 DO UPDATE SET (salesforce.category__c.*) = (SELECT * FROM category where catid__c = NEW.catid__c);
+                 ------------------------------------------------------------------------------------------------
+                 -- This statement will remove row from staging table public.category AFTER the UPSERT completes,
+                 -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
+                 DELETE FROM category WHERE catid__c = NEW.catid__c;
+                 ------------------------------------------------------------------------------------------------
+               RETURN NULL;
+         END; 
+    $BODY$
+    LANGUAGE plpgsql;
+
