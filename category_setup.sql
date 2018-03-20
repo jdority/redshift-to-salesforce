@@ -31,17 +31,9 @@ __
 --STEP 1:  A unique index on staging table to prevent duplicates when GLUE inserts
 CREATE unique index public_catid_idx_unq on public.category(catid);
 
---STEP 2:  After Heroku Connect has synced the Salesforce Object to Postgres, Make sure there is a UNIQUE CONSTRAINT on the column(s)
---         that control the UPSERT.     You can use HEROKU CLI to find this information:
-
---         You may have to DROP an existing Index on that column if its not unique.   In this example, I am creating a UNIQUE index
---         first using naming convention, then adding the contraint
-
-CREATE unique index catid_unq_idx on salesforce.category__c(catid__c);
-ALTER TABLE salesforce.category__c 
-   ADD CONSTRAINT catid__c_unq UNIQUE USING INDEX catid_unq_idx;
+--STEP 2:  Create a UNIQUE index for the logical primary key on the salesforce.schema.
+CREATE unique index salesforce_catid_idx on salesforce.category__c(catid__c);
    
-
 --STEP 3:  This function will write to the salesforce schema so Heroku Connect can then sync to salesforce; 
 --         AWS GLUE nor REDSHIFT support UPSERT 
 CREATE OR REPLACE FUNCTION public_category_after_insert()
@@ -72,11 +64,10 @@ CREATE OR REPLACE FUNCTION public_category_after_insert()
         -- This statement will remove row from staging table public.category AFTER the UPSERT completes,
         -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
         -- DELETE FROM category WHERE catid__c = NEW.catid__c;
-                 ------------------------------------------------------------------------------------------------
+        -- ----------------------------------------------------------------------------------------------
          END; 
     $BODY$
     LANGUAGE plpgsql;
-
 
 -- STEP 4: After AWS Glue writes a row of data into the staging table public.category - a procedure will be called to update 
 --         salesforce.category__c schema which is referenced in Heroku Connect
