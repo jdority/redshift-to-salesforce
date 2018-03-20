@@ -91,6 +91,6 @@ CREATE TRIGGER public_category_after_insert
 -- DROP TRIGGER public_category_after_insert ON category;
 -- ALTER TABLE category ALTER COLUMN createddate SET DEFAULT ('now'::text)::TIMESTAMP(6) WITHOUT TIME ZONE; 
 -- CURRVAL('salesforce.category__c_id_seq'::regclass) + 1)  
--- NEXTVAL('salesforce.category__c_id_seq'::regclass) + 1)  
+-- NEXTVAL('salesforce.category__c_id_seq'::regclass)  
 
 
