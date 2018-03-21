@@ -8,7 +8,7 @@
 __
 --  B) salesforce - this is the schema that Heroku Connect uses.
 
-create table cloud_forge_build_test
+CREATE TABLE cloud_forge_build_test
 (createddate           timestamp without time zone,
  isdeleted             boolean,  
  name                  character varying(80),    
