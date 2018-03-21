@@ -55,7 +55,7 @@ CREATE OR REPLACE FUNCTION public_cloud_forge_build_test_insert()
         -- ----------------------------------------------------------------------------------------------
         -- This statement will remove row from staging table public.category AFTER the UPSERT completes,
         -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
-           DELETE FROM cloud_forge_build_test__c WHERE name = NEW.name;
+           DELETE FROM cloud_forge_build_test WHERE name = NEW.name;
         -- ----------------------------------------------------------------------------------------------
          END; 
     $BODY$
