@@ -43,19 +43,19 @@ CREATE OR REPLACE FUNCTION public_cloud_forge_build_test_insert()
             IF cnt = 1 THEN   
                  -- UPSERT Syntax is inflexible - can't update all columns, must list by name.   
                  -- To reduce maintenance a delete/insert is used.    These should execute quickly since indexed.
-                 DELETE FROM salesforce.cloud_forge_build_test__c where name = NEW.name;
+                 DELETE FROM salesforce.cloud_forge_build_test__c WHERE name = NEW.name;
             END IF;
             
             -- Postgres does not automatically provide the next number in a sequence if the field is NULL, so must call NEXTVAL
             NEW.id = NEXTVAL('salesforce.cloud_forge_build_test__c_id_seq'::regclass);
             NEW.shadow_name__c = NEW.name;
-            INSERT INTO salesforce.cloud_forge_build_test__c values (NEW.*);
+            INSERT INTO salesforce.cloud_forge_build_test__c VALUES (NEW.*);
            
             RETURN NULL; 
         -- ----------------------------------------------------------------------------------------------
         -- This statement will remove row from staging table public.category AFTER the UPSERT completes,
         -- again because AWS Glue cannot TRUNCATE a table, it can only re-create
-           DELETE FROM category WHERE catid__c = NEW.catid__c;
+           DELETE FROM cloud_forge_build_test__c WHERE name = NEW.name;
         -- ----------------------------------------------------------------------------------------------
          END; 
     $BODY$
@@ -65,7 +65,7 @@ CREATE OR REPLACE FUNCTION public_cloud_forge_build_test_insert()
 --         Heroku Connect Connect managed table
 
 CREATE TRIGGER public_cloud_forge_build_test_after_insert
- AFTER INSERT on public.cloud_forge_build_test
+ AFTER INSERT ON public.cloud_forge_build_test
    FOR EACH ROW EXECUTE PROCEDURE public_cloud_forge_build_test_insert();
    
    -- Other handy Postgres syntax   
