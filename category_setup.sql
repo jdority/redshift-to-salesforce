@@ -1,13 +1,17 @@
---This Postgres Function + Trigger assist in getting around features glue doesn't have such as UPSERT and TRUNCATE TABLE.
+--category_setup.sql 
 --
---Heroku Postgres will use two Schemas which need to be IDENTICAL:
---  A) public - staging schema where AWS GLUE writes the Redshift rows for the category table.
+-- /* Create TWO IDENTICAL SCHEMAS, public and salesforce (.i.e schema name you are using in Heroku Connect):
+--
+--  A) public - staging schema where AWS GLUE writes the Redshift rows for the category table.  
+--         /*After tables are created use the Heroku CLI to view*/
 --         heroku pg:psql -a [app-name]
 --         \d salesforce.category__c;
 __
---  B) salesforce - this is the schema that Heroku Connect uses.
---     \d salesforce.category__c;
+--  B) salesforce - this is the schema that Heroku Connect uses to map columns into Salesforce.
+--         \d salesforce.category__c;
 --   
+--  /* Again, both schemas should be IDENTICAL.    Below is the table definition.    */
+--
 --    Column     |            Type             |                              Modifiers                              
 -- ----------------+-----------------------------+---------------------------------------------------------------------
 -- createddate    | timestamp without time zone | 
@@ -27,7 +31,9 @@ __
 --   "hcu_idx_category__c_sfid" UNIQUE, btree (sfid)            /* Heroku Connect also places a UNIQUE INDEX on the sfid (or ID in Salesforce)
 --   "hc_idx_category__c_systemmodstamp" btree (systemmodstamp)
 -- -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+--
+-- /* AWS Glue does not support UPSERT or TRUNCATE, so you must use a stored procedure + funtion to manage UPSERT. */
+--
 --STEP 1:  A unique index on staging table to prevent duplicates when GLUE inserts
 CREATE unique index public_catid_idx_unq on public.category(catid);
 
